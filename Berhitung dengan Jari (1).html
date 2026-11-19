@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Berhitung dengan Jari</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eaf3f7;--card:#fff;--ink:#16313a;--muted:#587380;--line:#cfe0e7;--accent:#1f7a8c;--accent-ink:#fff;--skin:#f4bf96;--skin-dark:#d98f62;--skin-text:#a5683f;--hi:#ff6b57;--tint:#fff0ed;--bubble:#f6fbfd;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1d22;--card:#172a31;--ink:#e8f2f5;--muted:#9db5be;--line:#2b4650;--accent:#4cc3d9;--accent-ink:#06222a;--skin:#eeb38a;--skin-dark:#c27d52;--skin-text:#8a5532;--tint:#3a2623;--bubble:#1d333b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1d22;--card:#172a31;--ink:#e8f2f5;--muted:#9db5be;--line:#2b4650;--accent:#4cc3d9;--accent-ink:#06222a;--skin:#eeb38a;--skin-dark:#c27d52;--skin-text:#8a5532;--tint:#3a2623;--bubble:#1d333b;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Baloo 2","Trebuchet MS",system-ui,sans-serif;font-weight:500;line-height:1.35}
+main{max-width:980px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:clamp(1.9rem,5vw,2.8rem);font-weight:800;margin:0}
+.sub{color:var(--muted);margin:2px 0 0;font-size:1.05rem}
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:16px;margin-top:16px}
+.row{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center}
+button{font:inherit;color:inherit;cursor:pointer}
+.tabs{display:flex;gap:8px}
+.tab{font-size:1.2rem;font-weight:700;padding:8px 18px;border-radius:999px;border:2px solid var(--line);background:var(--card)}
+.tab[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.num{display:flex;align-items:center;gap:8px}
+.num b{font-size:2.2rem;min-width:2.1ch;text-align:center;font-weight:800}
+.round{width:44px;height:44px;border-radius:50%;border:2px solid var(--accent);background:var(--card);font-size:1.5rem;font-weight:800;line-height:1;color:var(--accent)}
+.op{font-size:2.2rem;font-weight:800;color:var(--hi)}
+.lab{color:var(--muted);font-size:.9rem;display:block;text-align:center}
+.stage{display:grid;grid-template-columns:1fr;gap:16px;margin-top:10px}
+@media (min-width:760px){.stage{grid-template-columns:200px 1fr;align-items:center}}
+.head{text-align:center}
+.bubble{min-height:5em;display:grid;place-items:center;background:var(--bubble);border:2px solid var(--line);border-radius:30px;padding:8px 12px;font-size:2.6rem;font-weight:800;line-height:1.1}
+.tail{display:flex;flex-direction:column;align-items:center;gap:3px;margin:5px 0 2px}
+.tail i{display:block;border-radius:50%;background:var(--bubble);border:2px solid var(--line)}
+.tail i:nth-child(1){width:14px;height:14px}.tail i:nth-child(2){width:9px;height:9px}
+.head svg{width:110px;height:auto}
+.head small{display:block;color:var(--muted)}
+.hands{display:flex;gap:10px;justify-content:center}
+.hands svg{flex:1 1 0;min-width:0;max-width:200px;height:auto;overflow:visible}
+.f{cursor:pointer;outline:none}
+.fu,.ff{transition:transform .3s,opacity .3s,fill .2s;transform-box:fill-box;transform-origin:50% 100%}
+.fu{fill:var(--skin)}
+.ff{fill:var(--skin-dark);opacity:0}
+.f.down .fu{transform:scaleY(.25);opacity:0}
+.f.down .ff{opacity:1}
+.f.hi .fu,.f.hi .ff{fill:var(--hi)}
+.f:focus-visible .hit{stroke:var(--accent);stroke-width:2}
+.palm{fill:var(--skin)}
+.lbl{fill:var(--skin-text);font-size:11px;font-weight:700;text-anchor:middle;pointer-events:none}
+.eq{font-size:clamp(2.2rem,8vw,3.4rem);font-weight:800;text-align:center;letter-spacing:.02em}
+.cap{font-size:1.25rem;min-height:3.6em;background:var(--tint);border-left:6px solid var(--hi);border-radius:12px;padding:12px 14px;margin-top:14px}
+.nav{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.btn{font-weight:700;padding:10px 20px;border-radius:999px;border:2px solid var(--accent);background:var(--card);color:var(--accent);font-size:1.1rem}
+.btn.pri{background:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.dots{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--hi)}
+.hint{color:var(--muted);font-size:.95rem;margin:10px 0 0}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.fu,.ff{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<h1>Berhitung dengan Jari</h1>
+<p class="sub">Angka pertama disimpan di kepala, angka kedua dihitung pakai jari.</p>
+
+<section class="card" aria-label="Pengaturan soal">
+  <div class="row">
+    <div class="tabs" role="group" aria-label="Jenis hitungan">
+      <button class="tab" id="m-add" aria-pressed="true">Tambah</button>
+      <button class="tab" id="m-sub" aria-pressed="false">Kurang</button>
+    </div>
+    <div class="row" style="gap:10px">
+      <div><div class="num"><button class="round" data-k="a" data-d="-1" aria-label="Kurangi angka pertama">−</button><b id="a">15</b><button class="round" data-k="a" data-d="1" aria-label="Tambah angka pertama">+</button></div><span class="lab">di kepala</span></div>
+      <span class="op" id="op">+</span>
+      <div><div class="num"><button class="round" data-k="b" data-d="-1" aria-label="Kurangi angka kedua">−</button><b id="b">5</b><button class="round" data-k="b" data-d="1" aria-label="Tambah angka kedua">+</button></div><span class="lab">di jari (maksimal 10)</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="card" aria-label="Peragaan">
+  <div class="eq" id="eq" aria-live="polite"></div>
+  <div class="stage">
+    <div class="head">
+      <div class="bubble" id="bubble">…</div>
+      <div class="tail"><i></i><i></i></div>
+      <svg viewBox="0 0 120 130" aria-hidden="true">
+        <path d="M18 62C14 24 44 8 62 8s48 16 42 54c-8-14-22-22-42-22S26 48 18 62z" fill="#3b2a24"/>
+        <circle cx="12" cy="76" r="9" fill="var(--skin)"/><circle cx="108" cy="76" r="9" fill="var(--skin)"/>
+        <circle cx="60" cy="74" r="46" fill="var(--skin)"/>
+        <path d="M16 62C20 38 40 30 60 30s40 8 44 32c-10-12-26-16-44-16S26 50 16 62z" fill="#3b2a24"/>
+        <circle cx="44" cy="76" r="5" fill="#3b2a24"/><circle cx="76" cy="76" r="5" fill="#3b2a24"/>
+        <path d="M46 94q14 12 28 0" fill="none" stroke="#3b2a24" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <small>Di kepala</small>
+    </div>
+    <div class="hands" id="hands"></div>
+  </div>
+  <div class="cap" id="cap" aria-live="polite"></div>
+  <div class="nav">
+    <button class="btn" id="prev">Sebelumnya</button>
+    <button class="btn pri" id="next">Berikutnya</button>
+    <button class="btn" id="again">Ulangi</button>
+    <div class="dots" id="dots" aria-hidden="true"></div>
+  </div>
+  <p class="hint">Klik atau ketuk jari untuk melipat atau membukanya sendiri. Jari merah adalah jari yang sedang dihitung.</p>
+</section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const range=(x,y)=>Array.from({length:Math.max(0,y-x)},(_,k)=>x+k);
+const L=[38,52,58,52,40];
+const S={mode:'add',a:15,b:5,i:0,steps:[],up:[],hi:new Set()};
+
+function hand(h){
+ let s=`<svg viewBox="0 0 120 140" role="group" aria-label="Tangan ${h+1}"><rect class="palm" x="14" y="70" width="92" height="62" rx="26"/>`;
+ for(let i=0;i<5;i++){
+  const x=14+i*19,n=h*5+i,l=L[i];
+  s+=`<g class="f" data-i="${n}" tabindex="0" role="button" aria-label="Jari ${n+1}">
+  <rect class="fu" x="${x}" y="${80-l}" width="16" height="${l}" rx="8"/>
+  <rect class="ff" x="${x}" y="82" width="16" height="22" rx="8"/>
+  <text class="lbl" x="${x+8}" y="124">${n+1}</text>
+  <rect class="hit" x="${x}" y="${80-l}" width="16" height="${l+26}" rx="8" fill="transparent"/></g>`;
+ }
+ return s+'</svg>';
+}
+$('#hands').innerHTML=hand(0)+hand(1);
+const F=[...document.querySelectorAll('.f')].sort((p,q)=>p.dataset.i-q.dataset.i);
+
+function build(){
+ const {mode,a,b}=S,r=[];
+ if(mode==='add'){
+  r.push({t:`Simpan ${a} di kepala. Angka ${b} kita hitung pakai jari, satu jari satu angka.`,n:0,head:`${a}`});
+  for(let i=1;i<=b;i++)r.push({t:`Angkat jari ke-${i} sambil bilang “${a+i}”.`,n:i,hi:[i-1],head:`${a+i}`});
+  r.push({t:`Jari sudah ${b}, berhenti. Jawabannya ${a+b}. Jadi ${a} + ${b} = ${a+b}.`,n:b,head:`${a+b}`,done:1});
+ }else{
+  r.push({t:`Simpan ${a} di kepala. Angka ${b} kita hitung mundur, jadi tunjukkan ${b} jari.`,n:b,head:`${a}`});
+  for(let i=1;i<=b;i++)r.push({t:`Lipat 1 jari sambil bilang “${a-i}”.`,n:b-i,hi:[b-i],head:`${a-i}`});
+  r.push({t:`Semua ${b} jari sudah terlipat, berhenti. Jawabannya ${a-b}. Jadi ${a} − ${b} = ${a-b}.`,n:0,head:`${a-b}`,done:1});
+ }
+ S.steps=r;
+}
+function load(){
+ const st=S.steps[S.i];
+ S.up=Array.from({length:10},(_,k)=>k<st.n);
+ S.hi=new Set(st.hi||[]);
+}
+function reset(){
+ S.a=Math.min(Math.max(S.a,0),20);
+ S.b=Math.max(S.b,0);
+ S.b=Math.min(S.b,10,S.mode==='add'?20-S.a:S.a);
+ build();S.i=0;load();render();
+}
+function render(){
+ const st=S.steps[S.i],add=S.mode==='add';
+ $('#m-add').setAttribute('aria-pressed',add);$('#m-sub').setAttribute('aria-pressed',!add);
+ $('#a').textContent=S.a;$('#b').textContent=S.b;$('#op').textContent=add?'+':'−';
+ $('#eq').textContent=`${S.a} ${add?'+':'−'} ${S.b} = ${st.done?(add?S.a+S.b:S.a-S.b):'?'}`;
+ $('#bubble').textContent=st.head;
+ $('#cap').textContent=st.t;
+ $('#dots').innerHTML=S.steps.map((_,k)=>`<i class="${k===S.i?'on':''}"></i>`).join('');
+ $('#prev').disabled=S.i===0;$('#next').disabled=S.i===S.steps.length-1;
+ F.forEach((g,i)=>{g.classList.toggle('down',!S.up[i]);g.classList.toggle('hi',S.hi.has(i))});
+}
+function toggle(i){S.up[i]=!S.up[i];S.hi.delete(i);render()}
+
+document.addEventListener('click',e=>{
+ const f=e.target.closest('.f');if(f){toggle(+f.dataset.i);return}
+ const n=e.target.closest('.round');if(n){S[n.dataset.k]+=+n.dataset.d;reset()}
+});
+document.addEventListener('keydown',e=>{
+ const f=e.target.closest&&e.target.closest('.f');
+ if(f&&(e.key==='Enter'||e.key===' ')){e.preventDefault();toggle(+f.dataset.i)}
+});
+$('#m-add').onclick=()=>{S.mode='add';S.a=15;S.b=5;reset()};
+$('#m-sub').onclick=()=>{S.mode='sub';S.a=15;S.b=5;reset()};
+$('#next').onclick=()=>{if(S.i<S.steps.length-1){S.i++;load();render()}};
+$('#prev').onclick=()=>{if(S.i>0){S.i--;load();render()}};
+$('#again').onclick=()=>{S.i=0;load();render()};
+reset();
+</script>
+</body>
+</html>
